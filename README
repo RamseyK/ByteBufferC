@@ -3,7 +3,7 @@ Ramsey Kant
 
 https://github.com/RamseyK/ByteBufferC
 
-This class is a port of my C++ ByteBuffer to provide Java's ByteBuffer functionality. Feel free to make any suggestions for improving the code or request any features that could be beneficial to a variety of applications that may use this class.
+This is a port of my C++ ByteBuffer to provide Java's ByteBuffer functionality. Feel free to make any suggestions for improving the code or request any features that could be beneficial to a variety of applications that may use this class.
 
 Why Byte Buffer?
 -Relative and Absolute get() & put() methods
