@@ -1,0 +1,17 @@
+ByteBufferC
+Ramsey Kant
+
+https://github.com/RamseyK/ByteBufferC
+
+This class is a port of my C++ ByteBuffer to provide Java's ByteBuffer functionality. Feel free to make any suggestions for improving the code or request any features that could be beneficial to a variety of applications that may use this class.
+
+Why Byte Buffer?
+-Relative and Absolute get() & put() methods
+-Easier to work with than a raw byte array
+-Read and Write large amounts of data
+-Easy way to manipulate or create custom data structures
+
+Example Program:
+-dd_reader, a MBR / FAT Disk Image Parser: https://github.com/RamseyK/dd_reader
+
+Looking for ByteBuffer in C++? Try https://github.com/RamseyK/ByteBufferCpp
