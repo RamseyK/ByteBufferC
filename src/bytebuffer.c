@@ -303,14 +303,12 @@ void bb_put_at(byte_buffer *bb, uint8_t value, uint32_t index) {
 void bb_put_bytes(byte_buffer *bb, uint8_t *arr, size_t len) {
 	for(uint32_t i = 0; i < len; i++) {
 		bb_put(bb, arr[i]);
-		i++;
 	}
 }
 
 void bb_put_bytes_at(byte_buffer *bb, uint8_t *arr, size_t len, uint32_t index) {
 	for(uint32_t i = index; i < bb->len; i++) {
 		bb_put_at(bb, arr[i], index+i);
-		i++;
 	}
 }
 
