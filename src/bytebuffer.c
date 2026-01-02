@@ -64,6 +64,7 @@ byte_buffer *bb_new_from_file(const char *path, const char *fopen_opts) {
 	// Get the size of the file
 	if (stat(path, &sb) != 0) {
 		printf("Could not get the size of the file %s\n", path);
+		fclose(fp);
 		return NULL;
 	}
 
@@ -204,7 +205,7 @@ void bb_get_bytes_in(byte_buffer *bb, uint8_t *dest, size_t len) {
 	}
 }
 
-void bb_get_bytes_at_in(byte_buffer *bb, uint32_t index, uint8_t *dest, size_t len) {
+void bb_get_bytes_at_in(const byte_buffer *bb, uint32_t index, uint8_t *dest, size_t len) {
 	for (size_t i = 0; i < len; i++) {
 		dest[i] = bb_get_at(bb, index+i);
 	}
@@ -304,7 +305,7 @@ void bb_put_bytes(byte_buffer *bb, const uint8_t *arr, size_t len) {
 }
 
 void bb_put_bytes_at(byte_buffer *bb, const uint8_t *arr, size_t len, uint32_t index) {
-	for (uint32_t i = index; i < bb->len; i++) {
+	for (uint32_t i = index; i < len; i++) {
 		bb_put_at(bb, arr[i], index+i);
 	}
 }

@@ -60,7 +60,7 @@ uint8_t bb_peek(const byte_buffer *bb);
 uint8_t bb_get(byte_buffer *bb);
 uint8_t bb_get_at(const byte_buffer *bb, uint32_t index);
 void bb_get_bytes_in(byte_buffer *bb, uint8_t *dest, size_t len);
-void bb_get_bytes_at_in(byte_buffer *bb, uint32_t index, uint8_t *dest, size_t len);
+void bb_get_bytes_at_in(const byte_buffer *bb, uint32_t index, uint8_t *dest, size_t len);
 uint8_t *bb_get_bytes(byte_buffer *bb, size_t len);
 // uint8_t *bb_get_bytes_at(byte_buffer *bb, size_t len, uint32_t index);
 double bb_get_double(byte_buffer *bb);
