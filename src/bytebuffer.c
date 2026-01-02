@@ -1,7 +1,7 @@
 /**
    ByteBuffer (C implementation)
    bytebuffer.c
-   Copyright 2011-2013 Ramsey Kant
+   Copyright 2011-2025 Ramsey Kant
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ byte_buffer *bb_new_wrap(uint8_t *buf, size_t len) {
 }
 
 // Copy len bytes from buf into the newly created byte buffer
-byte_buffer *bb_new_copy(uint8_t *buf, size_t len) {
+byte_buffer *bb_new_copy(const uint8_t *buf, size_t len) {
 	byte_buffer *bb = (byte_buffer*)malloc(sizeof(byte_buffer));
 	bb->pos = 0;
 	bb->wrapped = false;
@@ -56,14 +56,15 @@ byte_buffer *bb_new_from_file(const char *path, const char *fopen_opts) {
 	byte_buffer *bb = NULL;
 
 	// Get the size of the file
-	if(stat(path, &sb) != 0) {
+	if (stat(path, &sb) == 0) {
+		// Open file as read only
+		fp = fopen(path, fopen_opts);
+	} else {
 		printf("Could not get the size of the file %s\n", path);
 		return NULL;
 	}
 
-	// Open file as read only
-	fp = fopen(path, fopen_opts);
-	if(fp == NULL) {
+	if (fp == NULL) {
 		printf("Could not open file %s\n", path);
 		return NULL;
 	}
@@ -74,7 +75,7 @@ byte_buffer *bb_new_from_file(const char *path, const char *fopen_opts) {
 
 	fclose(fp);
 
-	if(bytes_read != sb.st_size) {
+	if (bytes_read != sb.st_size) {
 		printf("Incomplete read. Read %i out of %i bytes.\n", (int)bytes_read, (int)sb.st_size);
 		free(file_buf);
 		return NULL;
@@ -103,7 +104,7 @@ byte_buffer *bb_new_default() {
  */
 bool bb_resize(byte_buffer* bb, size_t new_len) {
 	// Can't resize an internal buffer that may be used elsewhere
-	if(bb->wrapped)
+	if (bb->wrapped)
 		return false;
 
 	// Copy as much data from the old buffer as we can
@@ -120,7 +121,7 @@ bool bb_resize(byte_buffer* bb, size_t new_len) {
 }
 
 void bb_free(byte_buffer *bb) {
-	if(!bb->wrapped)
+	if (!bb->wrapped)
 		free(bb->buf);
 
 	free(bb);
@@ -131,12 +132,12 @@ void bb_skip(byte_buffer *bb, size_t len) {
 }
 
 // Number of bytes from the current read position till the end of the buffer
-size_t bb_bytes_left(byte_buffer *bb) {
+size_t bb_bytes_left(const byte_buffer *bb) {
 	return bb->len - bb->pos;
 }
 
 // Blank out the buffer and reset the position
-void bb_clear(byte_buffer *bb) {
+void bb_clear(const byte_buffer *bb) {
 	memset(bb->buf, 0, bb->len);
 }
 
@@ -148,12 +149,12 @@ byte_buffer *bb_clone(byte_buffer *bb) {
 }
 
 // Compare if the contents are equivalent
-bool bb_equals(byte_buffer* bb1, byte_buffer* bb2) {
-	if(bb1->len != bb2->len)
+bool bb_equals(const byte_buffer* bb1, const byte_buffer* bb2) {
+	if (bb1->len != bb2->len)
 		return false;
 
-	for(uint32_t i = 0; i < bb1->len; i++) {
-		if(bb1->buf[i] != bb2->buf[i])
+	for (uint32_t i = 0; i < bb1->len; i++) {
+		if (bb1->buf[i] != bb2->buf[i])
 			return false;
 	}
 
@@ -161,25 +162,25 @@ bool bb_equals(byte_buffer* bb1, byte_buffer* bb2) {
 }
 
 void bb_replace(byte_buffer *bb, uint8_t key, uint8_t rep, uint32_t start, bool firstOccuranceOnly) {
-	for(uint32_t i = start; i < bb->len; i++) {
-		if(bb->buf[i] == key) {
+	for (uint32_t i = start; i < bb->len; i++) {
+		if (bb->buf[i] == key) {
 			bb->buf[i] = rep;
 
-			if(firstOccuranceOnly)
+			if (firstOccuranceOnly)
 				return;
 		}
 	}
 }
 
-void bb_print_ascii(byte_buffer *bb) {
-	for(uint32_t i = 0; i < bb->len; i++) {
+void bb_print_ascii(const byte_buffer *bb) {
+	for (uint32_t i = 0; i < bb->len; i++) {
 		printf("%c ", bb->buf[i]);
 	}
 	printf("\n");
 }
 
-void bb_print_hex(byte_buffer *bb) {
-	for(uint32_t i = 0; i < bb->len; i++) {
+void bb_print_hex(const byte_buffer *bb) {
+	for (uint32_t i = 0; i < bb->len; i++) {
 		printf("0x%02x ", bb->buf[i]);
 	}
 	printf("\n");
@@ -202,13 +203,13 @@ uint8_t bb_get_at(byte_buffer *bb, uint32_t index) {
 }
 
 void bb_get_bytes_in(byte_buffer *bb, uint8_t *dest, size_t len) {
-	for(size_t i = 0; i < len; i++) {
+	for (size_t i = 0; i < len; i++) {
 		dest[i] = bb_get(bb);
 	}
 }
 
 void bb_get_bytes_at_in(byte_buffer *bb, uint32_t index, uint8_t *dest, size_t len) {
-	for(size_t i = 0; i < len; i++) {
+	for (size_t i = 0; i < len; i++) {
 		dest[i] = bb_get_at(bb, index+i);
 	}
 }
@@ -287,27 +288,27 @@ void bb_put_bb(byte_buffer *dest, byte_buffer* src) {
 }
 
 void bb_put(byte_buffer *bb, uint8_t value) {
-	if(bb->pos >= bb->len)
+	if (bb->pos >= bb->len)
 		return;
 
 	bb->buf[bb->pos++] = value;
 }
 
 void bb_put_at(byte_buffer *bb, uint8_t value, uint32_t index) {
-	if(index >= bb->len)
+	if (index >= bb->len)
 		return;
 
 	bb->buf[index] = value;
 }
 
 void bb_put_bytes(byte_buffer *bb, uint8_t *arr, size_t len) {
-	for(uint32_t i = 0; i < len; i++) {
+	for (uint32_t i = 0; i < len; i++) {
 		bb_put(bb, arr[i]);
 	}
 }
 
 void bb_put_bytes_at(byte_buffer *bb, uint8_t *arr, size_t len, uint32_t index) {
-	for(uint32_t i = index; i < bb->len; i++) {
+	for (uint32_t i = index; i < bb->len; i++) {
 		bb_put_at(bb, arr[i], index+i);
 	}
 }

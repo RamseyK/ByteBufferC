@@ -1,7 +1,7 @@
 /**
    ByteBuffer (C implementation)
    bytebuffer.h
-   Copyright 2011-2013 Ramsey Kant
+   Copyright 2011-2025 Ramsey Kant
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ typedef struct byte_buffer_t {
 
 // Memory allocation functions
 byte_buffer *bb_new_wrap(uint8_t *buf, size_t len);
-byte_buffer *bb_new_copy(uint8_t *buf, size_t len);
+byte_buffer *bb_new_copy(const uint8_t *buf, size_t len);
 byte_buffer *bb_new(size_t len);
 byte_buffer *bb_new_from_file(const char *path, const char *fopen_opts);
 byte_buffer *bb_new_default();
@@ -47,13 +47,13 @@ void bb_free(byte_buffer *bb);
 
 // Utility
 void bb_skip(byte_buffer *bb, size_t len);
-size_t bb_bytes_left(byte_buffer *bb);
-void bb_clear(byte_buffer *bb);
-byte_buffer *bb_clone();
-bool bb_equals(byte_buffer* bb1, byte_buffer* bb2);
+size_t bb_bytes_left(const byte_buffer *bb);
+void bb_clear(const byte_buffer *bb);
+byte_buffer *bb_clone(byte_buffer *bb);
+bool bb_equals(const byte_buffer* bb1, const byte_buffer* bb2);
 void bb_replace(byte_buffer *bb, uint8_t key, uint8_t rep, uint32_t start, bool firstOccuranceOnly);
-void bb_print_ascii(byte_buffer *bb);
-void bb_print_hex(byte_buffer *bb);
+void bb_print_ascii(const byte_buffer *bb);
+void bb_print_hex(const byte_buffer *bb);
 
 // Read functions
 uint8_t bb_peek(byte_buffer *bb);
