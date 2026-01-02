@@ -49,23 +49,21 @@ byte_buffer *bb_new(size_t len) {
 }
 
 byte_buffer *bb_new_from_file(const char *path, const char *fopen_opts) {
-	struct stat sb;
+	struct stat sb = {0};
 	FILE *fp;
 	size_t bytes_read = 0;
 	uint8_t *file_buf = NULL;
-	byte_buffer *bb = NULL;
 
-	// Get the size of the file
-	if (stat(path, &sb) == 0) {
-		// Open file as read only
-		fp = fopen(path, fopen_opts);
-	} else {
-		printf("Could not get the size of the file %s\n", path);
+	// Open file as read only
+	fp = fopen(path, fopen_opts);
+	if (fp == NULL) {
+		printf("Could not open file %s\n", path);
 		return NULL;
 	}
 
-	if (fp == NULL) {
-		printf("Could not open file %s\n", path);
+	// Get the size of the file
+	if (stat(path, &sb) != 0) {
+		printf("Could not get the size of the file %s\n", path);
 		return NULL;
 	}
 
@@ -81,9 +79,7 @@ byte_buffer *bb_new_from_file(const char *path, const char *fopen_opts) {
 		return NULL;
 	}
 
-	bb = bb_new_wrap(file_buf, bytes_read);
-
-	return bb;
+	return bb_new_wrap(file_buf, bytes_read);
 }
 
 byte_buffer *bb_new_default() {
@@ -142,7 +138,7 @@ void bb_clear(const byte_buffer *bb) {
 }
 
 // Return a new instance of a bytebuffer with the exact same contents and the same state
-byte_buffer *bb_clone(byte_buffer *bb) {
+byte_buffer *bb_clone(const byte_buffer *bb) {
 	byte_buffer *ret = bb_new_copy(bb->buf, bb->len);
 	ret->pos = bb->pos;
 	return ret;
@@ -187,7 +183,7 @@ void bb_print_hex(const byte_buffer *bb) {
 }
 
 // Relative peek. Reads and returns the next byte in the buffer from the current position but does not increment the read position
-uint8_t bb_peek(byte_buffer *bb) {
+uint8_t bb_peek(const byte_buffer *bb) {
 	//return *(uint8_t*)(bb->buf+bb->pos);
 	return bb->buf[bb->pos];
 }
@@ -198,7 +194,7 @@ uint8_t bb_get(byte_buffer *bb) {
 }
 
 // Absolute get method. Read byte at index
-uint8_t bb_get_at(byte_buffer *bb, uint32_t index) {
+uint8_t bb_get_at(const byte_buffer *bb, uint32_t index) {
 	return bb->buf[index];
 }
 
@@ -223,9 +219,9 @@ uint8_t *bb_get_bytes(byte_buffer *bb, size_t len) {
 }
 
 // Return a new byte array of size len with the contents from the index position
-uint8_t *bb_get_bytes_at(byte_buffer *bb, size_t len, uint32_t index) {
-	return (uint8_t*)malloc(len);
-}
+// uint8_t *bb_get_bytes_at(byte_buffer *bb, size_t len, uint32_t index) {
+// 	return (uint8_t*)malloc(len);
+// }
 
 double bb_get_double(byte_buffer *bb) {
 	double ret = *(double*)(bb->buf+bb->pos);
@@ -278,7 +274,7 @@ uint16_t bb_get_short_at(byte_buffer *bb, uint32_t index) {
 }
 
 // Relative write of the entire contents of another ByteBuffer (src)
-void bb_put_bb(byte_buffer *dest, byte_buffer* src) {
+void bb_put_bb(byte_buffer *dest, const byte_buffer* src) {
 	uint32_t i = src->pos;
 
 	while(i < src->len) {
@@ -301,13 +297,13 @@ void bb_put_at(byte_buffer *bb, uint8_t value, uint32_t index) {
 	bb->buf[index] = value;
 }
 
-void bb_put_bytes(byte_buffer *bb, uint8_t *arr, size_t len) {
+void bb_put_bytes(byte_buffer *bb, const uint8_t *arr, size_t len) {
 	for (uint32_t i = 0; i < len; i++) {
 		bb_put(bb, arr[i]);
 	}
 }
 
-void bb_put_bytes_at(byte_buffer *bb, uint8_t *arr, size_t len, uint32_t index) {
+void bb_put_bytes_at(byte_buffer *bb, const uint8_t *arr, size_t len, uint32_t index) {
 	for (uint32_t i = index; i < bb->len; i++) {
 		bb_put_at(bb, arr[i], index+i);
 	}

@@ -49,20 +49,20 @@ void bb_free(byte_buffer *bb);
 void bb_skip(byte_buffer *bb, size_t len);
 size_t bb_bytes_left(const byte_buffer *bb);
 void bb_clear(const byte_buffer *bb);
-byte_buffer *bb_clone(byte_buffer *bb);
+byte_buffer *bb_clone(const byte_buffer *bb);
 bool bb_equals(const byte_buffer* bb1, const byte_buffer* bb2);
 void bb_replace(byte_buffer *bb, uint8_t key, uint8_t rep, uint32_t start, bool firstOccuranceOnly);
 void bb_print_ascii(const byte_buffer *bb);
 void bb_print_hex(const byte_buffer *bb);
 
 // Read functions
-uint8_t bb_peek(byte_buffer *bb);
+uint8_t bb_peek(const byte_buffer *bb);
 uint8_t bb_get(byte_buffer *bb);
-uint8_t bb_get_at(byte_buffer *bb, uint32_t index);
+uint8_t bb_get_at(const byte_buffer *bb, uint32_t index);
 void bb_get_bytes_in(byte_buffer *bb, uint8_t *dest, size_t len);
 void bb_get_bytes_at_in(byte_buffer *bb, uint32_t index, uint8_t *dest, size_t len);
 uint8_t *bb_get_bytes(byte_buffer *bb, size_t len);
-uint8_t *bb_get_bytes_at(byte_buffer *bb, size_t len, uint32_t index);
+// uint8_t *bb_get_bytes_at(byte_buffer *bb, size_t len, uint32_t index);
 double bb_get_double(byte_buffer *bb);
 double bb_get_double_at(byte_buffer *bb, uint32_t index);
 float bb_get_float(byte_buffer *bb);
@@ -75,11 +75,11 @@ uint16_t bb_get_short(byte_buffer *bb);
 uint16_t bb_get_short_at(byte_buffer *bb, uint32_t index);
 
 // Put functions (simply drop bytes until there is no more room)
-void bb_put_bb(byte_buffer *dest, byte_buffer* src);
+void bb_put_bb(byte_buffer *dest, const byte_buffer* src);
 void bb_put(byte_buffer *bb, uint8_t value);
 void bb_put_at(byte_buffer *bb, uint8_t value, uint32_t index);
-void bb_put_bytes(byte_buffer *bb, uint8_t *arr, size_t len);
-void bb_put_bytes_at(byte_buffer *bb, uint8_t *arr, size_t len, uint32_t index);
+void bb_put_bytes(byte_buffer *bb, const uint8_t *arr, size_t len);
+void bb_put_bytes_at(byte_buffer *bb, const uint8_t *arr, size_t len, uint32_t index);
 void bb_put_double(byte_buffer *bb, double value);
 void bb_put_double_at(byte_buffer *bb, double value, uint32_t index);
 void bb_put_float(byte_buffer *bb, float value);
